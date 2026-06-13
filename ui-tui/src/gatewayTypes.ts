@@ -53,6 +53,82 @@ export interface CreditsViewResponse {
   topup_url: string | null
 }
 
+// ── Terminal billing (Phase 2b) ──────────────────────────────────────
+
+export interface BillingCardInfo {
+  brand: string
+  last4: string
+  masked: string
+}
+
+export interface BillingMonthlyCap {
+  is_default_ceiling: boolean
+  limit_display: string
+  limit_usd: string | null
+  spent_display: string
+  spent_this_month_usd: string | null
+}
+
+export interface BillingAutoReload {
+  enabled: boolean
+  reload_to_display: string
+  reload_to_usd: string | null
+  threshold_display: string
+  threshold_usd: string | null
+}
+
+export interface BillingStateResponse {
+  auto_reload: BillingAutoReload | null
+  balance_display: string
+  balance_usd: string | null
+  can_charge: boolean
+  card: BillingCardInfo | null
+  charge_presets: string[]
+  charge_presets_display: string[]
+  cli_billing_enabled: boolean
+  error?: string | null
+  is_admin: boolean
+  logged_in: boolean
+  max_usd: string | null
+  min_usd: string | null
+  monthly_cap: BillingMonthlyCap | null
+  ok: boolean
+  org_name: string | null
+  portal_url: string | null
+  role: string | null
+}
+
+export interface BillingChargeResponse {
+  charge_id?: string
+  error?: string
+  idempotency_key?: string
+  message?: string
+  ok: boolean
+  portal_url?: string | null
+  retry_after?: number | null
+}
+
+export interface BillingChargeStatusResponse {
+  amount_usd?: string | null
+  error?: string
+  message?: string
+  ok: boolean
+  portal_url?: string | null
+  reason?: string | null
+  retry_after?: number | null
+  settled_at?: string | null
+  status?: string
+}
+
+export interface BillingMutationResponse {
+  error?: string
+  granted?: boolean
+  message?: string
+  ok: boolean
+  portal_url?: string | null
+  retry_after?: number | null
+}
+
 export type CommandDispatchResponse =
   | { output?: string; type: 'exec' | 'plugin' }
   | { target: string; type: 'alias' }

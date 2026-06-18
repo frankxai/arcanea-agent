@@ -24,19 +24,22 @@ Build Arcanea Agent v0 as a Hermes profile distribution that works on unmodified
 
 Deliverables:
 
-- `arcanea/profile-distribution/distribution.yaml`
-- `arcanea/profile-distribution/SOUL.md`
-- `arcanea/profile-distribution/config.yaml`
-- `arcanea/profile-distribution/mcp.json`
-- `arcanea/profile-distribution/skills/arcanea-start/SKILL.md`
-- install/readme docs
+- [x] `arcanea/profile-distribution/distribution.yaml`
+- [x] `arcanea/profile-distribution/SOUL.md`
+- [x] `arcanea/profile-distribution/config.yaml`
+- [x] `arcanea/profile-distribution/mcp.json`
+- [x] `arcanea/profile-distribution/skills/arcanea-start/SKILL.md`
+- [x] Standalone installable repo: `frankxai/arcanea-agent-profile`
+- [x] Installer docs: `docs/arcanea/INSTALL.md`
+- [x] Installer scripts: `scripts/install-arcanea-agent.sh`, `scripts/install-arcanea-agent.ps1`
+- [x] Phase execution log: `docs/arcanea/PHASE_1_EXECUTION_LOG.md`
 
 Acceptance:
 
-- A clean Hermes install can install the Arcanea profile.
-- User credentials remain local.
-- Arcanea Registry MCP can be wired without editing Hermes core.
-- SIS memory access is documented and optional until a public MCP path is stable.
+- [x] A clean Hermes install can install the Arcanea profile from GitHub root.
+- [x] User credentials remain local.
+- [x] Arcanea Registry MCP can be wired without editing Hermes core.
+- [ ] SIS memory access is documented and optional until a public MCP path is stable.
 
 ## Phase 2: Arcanea integration layer
 

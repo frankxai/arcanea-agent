@@ -46,10 +46,22 @@ Use Arcanea for the differentiated layer:
 - Do not custody user model credentials in Arcanea Cloud for v0.
 - Do not imply endorsement by Nous Research.
 
+## Install v0 profile
+
+The public installable profile distribution lives in a companion repo because Hermes profile installation expects `distribution.yaml` at the source repo root:
+
+```bash
+hermes profile install github.com/frankxai/arcanea-agent-profile --name arcanea-agent --alias --force -y
+arcanea-agent chat
+```
+
+Local installer wrappers live in `scripts/install-arcanea-agent.sh` and `scripts/install-arcanea-agent.ps1`.
+
 ## Repository policy
 
 - `origin`: `https://github.com/frankxai/arcanea-agent.git`
 - `upstream`: `https://github.com/NousResearch/hermes-agent.git`
+- Profile distribution: `https://github.com/frankxai/arcanea-agent-profile`
 - Keep upstream close.
 - Keep Arcanea patches small, documented, and easy to rebase.
 - Upstream generic fixes to Nous when possible.

@@ -1,6 +1,3 @@
-<p align="center">
-  <img src="https://raw.githubusercontent.com/frankxai/arcanea-agent/main/assets/banner.png" alt="Arcanea Agent" width="100%">
-</p>
 
 # Arcanea Agent ☤
 

@@ -18,7 +18,7 @@ For each patch, answer:
 
 | Date | Commit | Area | Files | Reason | Upstream candidate | Verification |
 | --- | --- | --- | --- | --- | --- | --- |
-| 2026-06-18 | 77841e77f, 053650439 | bootstrap docs/profile config | `ARCANEA.md`, `ARCANEA_PATCH_LEDGER.md`, `UPSTREAM_SYNC.md`, `docs/arcanea/*`, `arcanea/profile-distribution/*` | Establish fork doctrine and v0 product plan without touching Hermes core. | No | Docs readback, git status, remotes. |
+| 2026-06-18 | 77841e77f, ef3ed0e43 | bootstrap docs/profile config | `ARCANEA.md`, `ARCANEA_PATCH_LEDGER.md`, `UPSTREAM_SYNC.md`, `docs/arcanea/*`, `arcanea/profile-distribution/*` | Establish fork doctrine and v0 product plan without touching Hermes core. | No | Docs readback, git status, remotes, YAML/JSON validation, local profile install, `hermes -p arcanea-agent mcp list`. |
 
 ## Patch categories
 

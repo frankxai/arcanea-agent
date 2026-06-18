@@ -479,6 +479,34 @@ class TestSecurity:
         if (plan.target_dir / ".env").exists():
             assert "LEAKED" not in (plan.target_dir / ".env").read_text()
 
+    def test_install_does_not_import_vcs_metadata_from_staging(self, profile_env):
+        """Git-backed profile installs stage a clone before copying payload.
+        If .git survives clone cleanup on Windows, it must still never land in
+        the installed profile."""
+        staged = _make_staging_dir(profile_env, "src")
+        (staged / ".git" / "objects" / "pack").mkdir(parents=True)
+        (staged / ".git" / "objects" / "pack" / "pack.idx").write_text("git metadata")
+        (staged / ".github" / "ISSUE_TEMPLATE").mkdir(parents=True)
+        (staged / ".github" / "ISSUE_TEMPLATE" / "bug.md").write_text("template")
+
+        plan = install_distribution(str(staged), name="no_vcs")
+
+        assert not (plan.target_dir / ".git").exists(), ".git metadata leaked"
+        assert (plan.target_dir / ".github" / "ISSUE_TEMPLATE" / "bug.md").exists()
+
+    def test_force_install_removes_existing_vcs_metadata_from_target(self, profile_env):
+        """A previous buggy install may have copied .git into a profile.
+        Reinstalling with --force must clean that metadata even if the new
+        distribution source no longer contains it."""
+        staged = _make_staging_dir(profile_env, "src")
+        plan = install_distribution(str(staged), name="dirty")
+        (plan.target_dir / ".git" / "objects").mkdir(parents=True)
+        (plan.target_dir / ".git" / "objects" / "leaked.idx").write_text("old metadata")
+
+        reinstall = install_distribution(str(staged), name="dirty", force=True)
+
+        assert not (reinstall.target_dir / ".git").exists(), "stale .git metadata survived force install"
+
     def test_install_rejects_symlinked_distribution_files(self, profile_env, tmp_path):
         """Distribution install must not follow symlinks to local files."""
         staged = _make_staging_dir(profile_env, "src")

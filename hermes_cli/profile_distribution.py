@@ -61,8 +61,10 @@ Update semantics:
 
 from __future__ import annotations
 
+import os
 import re
 import shutil
+import stat
 import subprocess
 import tempfile
 from dataclasses import dataclass, field
@@ -93,6 +95,11 @@ DEFAULT_DIST_OWNED: Tuple[str, ...] = (
     MANIFEST_FILENAME,
 )
 
+# Top-level VCS metadata is never profile content.  Git-backed profile installs
+# stage a clone, and Windows can occasionally leave .git behind if clone-cleanup
+# races antivirus/indexers; the payload copy and target cleanup both guard this.
+VCS_METADATA_EXCLUDE: frozenset = frozenset({".git", ".hg", ".svn", ".jj"})
+
 # Paths that are NEVER part of a distribution. These are user-owned and are
 # protected on update. Must stay consistent with
 # ``profiles.py::_DEFAULT_EXPORT_EXCLUDE_ROOT`` plus the ``local/``
@@ -116,7 +123,7 @@ USER_OWNED_EXCLUDE: frozenset = frozenset({
     "hermes-agent", ".worktrees", "profiles", "bin", "node_modules",
     # User customization namespace
     "local",
-})
+}) | VCS_METADATA_EXCLUDE
 
 
 # ---------------------------------------------------------------------------
@@ -542,6 +549,30 @@ def plan_install(
     )
 
 
+def _remove_readonly_tree(path: Path) -> None:
+    """Remove a tree, retrying read-only files as writable on Windows."""
+
+    def _onerror(func, value, _exc_info):
+        try:
+            os.chmod(value, stat.S_IWRITE | stat.S_IREAD)
+            func(value)
+        except Exception:
+            raise
+
+    shutil.rmtree(path, onerror=_onerror)
+
+
+def _purge_vcs_metadata(target: Path) -> None:
+    """Remove forbidden top-level VCS metadata from an installed profile."""
+    for name in VCS_METADATA_EXCLUDE:
+        entry = target / name
+        if entry.is_dir():
+            _remove_readonly_tree(entry)
+        elif entry.exists():
+            entry.chmod(stat.S_IWRITE | stat.S_IREAD)
+            entry.unlink()
+
+
 def _copy_dist_payload(
     staged: Path,
     target: Path,
@@ -556,6 +587,7 @@ def _copy_dist_payload(
     shadowing a real ``.env``.
     """
     target.mkdir(parents=True, exist_ok=True)
+    _purge_vcs_metadata(target)
 
     for entry in staged.iterdir():
         name = entry.name
@@ -572,7 +604,7 @@ def _copy_dist_payload(
         dest = target / name
         if entry.is_dir():
             if dest.exists():
-                shutil.rmtree(dest)
+                _remove_readonly_tree(dest)
             staged_resolved = staged.resolve()
             shutil.copytree(
                 entry,
@@ -586,7 +618,7 @@ def _copy_dist_payload(
         else:
             shutil.copy2(entry, dest)
 
-    # Emit .env.EXAMPLE from manifest if the staged tree didn't ship one
+
     if manifest.env_requires and not (target / ENV_EXAMPLE_FILENAME).exists():
         (target / ENV_EXAMPLE_FILENAME).write_text(
             _env_template_from_manifest(manifest), encoding="utf-8"

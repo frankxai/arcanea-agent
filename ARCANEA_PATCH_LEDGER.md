@@ -19,6 +19,8 @@ For each patch, answer:
 | Date | Commit | Area | Files | Reason | Upstream candidate | Verification |
 | --- | --- | --- | --- | --- | --- | --- |
 | 2026-06-18 | 77841e77f, ef3ed0e43 | bootstrap docs/profile config | `ARCANEA.md`, `ARCANEA_PATCH_LEDGER.md`, `UPSTREAM_SYNC.md`, `docs/arcanea/*`, `arcanea/profile-distribution/*` | Establish fork doctrine and v0 product plan without touching Hermes core. | No | Docs readback, git status, remotes, YAML/JSON validation, local profile install, `hermes -p arcanea-agent mcp list`. |
+| 2026-06-18 | 75c113baa | installer/profile publication | `scripts/install-arcanea-agent.sh`, `scripts/install-arcanea-agent.ps1`, `docs/arcanea/INSTALL.md`, `docs/arcanea/PHASE_1_EXECUTION_LOG.md`, `.github/ISSUE_TEMPLATE/phase-task.md`, `ARCANEA.md`, `docs/arcanea/BOOTSTRAP_PLAN.md` | Publish one-command Arcanea profile install path while keeping Hermes core untouched. | No | `bash -n`, PowerShell parser, public GitHub profile install smoke, skills list, MCP list. |
+| 2026-06-18 | f1e3e76bd | profile distribution installer hardening | `hermes_cli/profile_distribution.py`, `tests/hermes_cli/test_profile_distribution.py` | Prevent Git/VCS metadata from shipping into installed Hermes profiles and clean stale metadata on force reinstall, fixing Windows permission failures. | Yes | `py -3.13 -m pytest tests/hermes_cli/test_profile_distribution.py -q -o addopts=''` → 71 passed. |
 
 ## Patch categories
 

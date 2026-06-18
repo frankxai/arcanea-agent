@@ -1,0 +1,26 @@
+# Arcanea Agent profile defaults.
+# Users keep their own provider credentials and can change these in Hermes settings.
+
+model:
+  provider: openai-codex
+  default: gpt-5.5
+
+agent:
+  max_turns: 90
+  tool_use_enforcement: true
+
+memory:
+  memory_enabled: true
+  user_profile_enabled: true
+
+compression:
+  enabled: true
+
+approvals:
+  mode: manual
+
+security:
+  redact_secrets: true
+
+# Arcanea surfaces should come from profile skills/MCP/plugins first.
+# Avoid changing Hermes core toolsets here unless the user opts in.

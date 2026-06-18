@@ -5,10 +5,12 @@ This directory is the first Arcanea Agent product surface: an installable Hermes
 ## Install locally from this checkout
 
 ```bash
-hermes profile install C:/Users/frank/arcanea-agent/arcanea/profile-distribution --alias arcanea-agent
+hermes profile install C:/Users/frank/arcanea-agent/arcanea/profile-distribution --name arcanea-agent --alias --force -y
 arcanea-agent setup
 arcanea-agent chat
 ```
+
+The Arcanea Registry MCP entry lives in `config.yaml` under `mcp_servers.arcanea_registry` and is installed disabled by default. Build the registry MCP package and enable/test it before public use.
 
 If `hermes profile install` is unavailable in the installed Hermes version, create a profile manually and copy these files into it:
 

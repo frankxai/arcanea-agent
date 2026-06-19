@@ -32,6 +32,7 @@ import {
   Plus,
   Settings,
   Settings2,
+  Sparkles,
   Sun,
   Terminal,
   Users,
@@ -47,6 +48,7 @@ import { isUserTheme, resolveTheme } from '@/themes/user-themes'
 
 import {
   AGENTS_ROUTE,
+  ARCANEA_ROUTE,
   ARTIFACTS_ROUTE,
   COMMAND_CENTER_ROUTE,
   CRON_ROUTE,
@@ -310,6 +312,14 @@ export function CommandPalette() {
             keywords: ['tools', 'toolsets'],
             label: cc.nav.skills.title,
             run: go(SKILLS_ROUTE)
+          },
+          {
+            action: 'nav.arcanea',
+            icon: Sparkles,
+            id: 'nav-arcanea',
+            keywords: ['arcanea', 'world', 'creative', 'studio'],
+            label: 'Arcanea Studio',
+            run: go(ARCANEA_ROUTE)
           },
           {
             action: 'nav.messaging',

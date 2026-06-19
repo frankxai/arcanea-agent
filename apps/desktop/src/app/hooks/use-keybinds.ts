@@ -44,6 +44,7 @@ import { requestComposerFocus } from '../chat/composer/focus'
 import { SIDEBAR_COLLAPSE_MEDIA_QUERY } from '../layout-constants'
 import {
   AGENTS_ROUTE,
+  ARCANEA_ROUTE,
   ARTIFACTS_ROUTE,
   CRON_ROUTE,
   MESSAGING_ROUTE,
@@ -120,6 +121,7 @@ export function useKeybinds(deps: KeybindRuntimeDeps): void {
     'nav.settings': () => navigate(SETTINGS_ROUTE),
     'nav.profiles': () => navigate(PROFILES_ROUTE),
     'nav.skills': () => navigate(SKILLS_ROUTE),
+    'nav.arcanea': () => navigate(ARCANEA_ROUTE),
     'nav.messaging': () => navigate(MESSAGING_ROUTE),
     'nav.artifacts': () => navigate(ARTIFACTS_ROUTE),
     'nav.cron': () => navigate(CRON_ROUTE),

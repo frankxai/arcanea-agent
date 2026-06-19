@@ -8,9 +8,11 @@ export const ARTIFACTS_ROUTE = '/artifacts'
 export const CRON_ROUTE = '/cron'
 export const PROFILES_ROUTE = '/profiles'
 export const AGENTS_ROUTE = '/agents'
+export const ARCANEA_ROUTE = '/arcanea'
 
 export type AppView =
   | 'agents'
+  | 'arcanea'
   | 'artifacts'
   | 'chat'
   | 'command-center'
@@ -22,6 +24,7 @@ export type AppView =
 
 export type AppRouteId =
   | 'agents'
+  | 'arcanea'
   | 'artifacts'
   | 'command-center'
   | 'cron'
@@ -46,7 +49,8 @@ export const APP_ROUTES = [
   { id: 'artifacts', path: ARTIFACTS_ROUTE, view: 'artifacts' },
   { id: 'cron', path: CRON_ROUTE, view: 'cron' },
   { id: 'profiles', path: PROFILES_ROUTE, view: 'profiles' },
-  { id: 'agents', path: AGENTS_ROUTE, view: 'agents' }
+  { id: 'agents', path: AGENTS_ROUTE, view: 'agents' },
+  { id: 'arcanea', path: ARCANEA_ROUTE, view: 'arcanea' }
 ] as const satisfies readonly AppRoute[]
 
 const APP_VIEW_BY_PATH = new Map<string, AppView>(APP_ROUTES.map(route => [route.path, route.view]))

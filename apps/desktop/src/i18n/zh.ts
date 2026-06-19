@@ -1334,6 +1334,7 @@ export const zh: Translations = {
     nav: {
       'new-session': '新建会话',
       skills: '技能与工具',
+      arcanea: 'Arcanea 工作室',
       messaging: '消息平台',
       artifacts: '产物'
     },

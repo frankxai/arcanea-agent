@@ -85,6 +85,8 @@ import { clearSessionTodos, setSessionTodos, todoListActive } from '../store/tod
 import { openUpdatesWindow, startUpdatePoller, stopUpdatePoller } from '../store/updates'
 import { isSecondaryWindow } from '../store/windows'
 
+import { applyPendingArcaneaPrompt } from '@/arcanea/launch-session'
+
 import { ChatView } from './chat'
 import { requestComposerFocus, requestComposerInsert } from './chat/composer/focus'
 import { useComposerActions } from './chat/hooks/use-composer-actions'
@@ -136,6 +138,7 @@ const MessagingView = lazy(async () => ({ default: (await import('./messaging'))
 const ProfilesView = lazy(async () => ({ default: (await import('./profiles')).ProfilesView }))
 const SettingsView = lazy(async () => ({ default: (await import('./settings')).SettingsView }))
 const SkillsView = lazy(async () => ({ default: (await import('./skills')).SkillsView }))
+const ArcaneaView = lazy(async () => ({ default: (await import('@/arcanea')).default }))
 
 // Latest cron-job sessions surfaced in the collapsed "Cron jobs" section. The
 // Cron sessions are written by a background scheduler tick (the desktop
@@ -701,6 +704,14 @@ export function DesktopController() {
     startFreshSessionDraft()
   }, [freshSessionRequest, startFreshSessionDraft])
 
+  useEffect(() => {
+    if (!freshDraftReady) {
+      return
+    }
+
+    applyPendingArcaneaPrompt()
+  }, [freshDraftReady])
+
   // Swapping the live gateway to another profile must re-pull that profile's
   // global model + active-profile pill. Both are nanostores, so the blanket
   // invalidateQueries() the profile store fires on swap doesn't touch them —
@@ -1179,6 +1190,14 @@ export function DesktopController() {
               </Suspense>
             }
             path="artifacts"
+          />
+          <Route
+            element={
+              <Suspense fallback={null}>
+                <ArcaneaView />
+              </Suspense>
+            }
+            path="arcanea"
           />
           <Route element={null} path="cron" />
           <Route element={null} path="profiles" />

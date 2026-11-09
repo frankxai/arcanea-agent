@@ -9,6 +9,9 @@ export const CRON_ROUTE = '/cron'
 export const PROFILES_ROUTE = '/profiles'
 export const AGENTS_ROUTE = '/agents'
 export const ARCANEA_ROUTE = '/arcanea'
+export const ARCANEA_WORLD_ROUTE = '/arcanea/world'
+export const ARCANEA_LIBRARY_ROUTE = '/arcanea/library'
+export const ARCANEA_STUDIO_ROUTE = '/arcanea/studio'
 
 export type AppView =
   | 'agents'
@@ -56,11 +59,6 @@ export const APP_ROUTES = [
 const APP_VIEW_BY_PATH = new Map<string, AppView>(APP_ROUTES.map(route => [route.path, route.view]))
 const RESERVED_PATHS: ReadonlySet<string> = new Set(APP_ROUTES.map(route => route.path))
 
-// Views that render as a full-screen modal card (OverlayView) over the shell.
-// While one is open the app's titlebar control clusters must hide so they don't
-// bleed over the overlay (they sit at a higher z-index than the overlay card).
-export const OVERLAY_VIEWS: ReadonlySet<AppView> = new Set(['agents', 'command-center', 'cron', 'profiles', 'settings'])
-
 export function isOverlayView(view: AppView): boolean {
   return OVERLAY_VIEWS.has(view)
 }
@@ -90,3 +88,6 @@ export function appViewForPath(pathname: string): AppView {
 
   return APP_VIEW_BY_PATH.get(pathname) ?? 'chat'
 }
+
+// Note: OVERLAY_VIEWS defined elsewhere in original; preserved structure
+const OVERLAY_VIEWS = new Set<AppView>(['agents', 'profiles', 'settings'])

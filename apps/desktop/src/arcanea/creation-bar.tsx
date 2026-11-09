@@ -1,14 +1,14 @@
 import { useNavigate } from 'react-router-dom'
 
 import { Button } from '@/components/ui/button'
-import { FileText, FolderOpen, Globe, Palette, Plus, Sparkles, Users } from '@/lib/icons'
+import { FileText, FolderOpen, Globe, ImageIcon, Palette, Plus, Sparkles, Users } from '@/lib/icons'
 
 import { ARCANEA_ROUTE, ARTIFACTS_ROUTE } from '@/app/routes'
 
-import { launchArcaneaChatFlow } from './launch-session'
+import { launchArcaneaChatFlow, launchArcaneaImageFlow } from './launch-session'
 
 /**
- * Arcanea Creation Bar — New Session + guided creative flows.
+ * Arcanea Creation Bar — quick creative entry points.
  */
 export function ArcaneaCreationBar({ onNewSession }: { onNewSession?: () => void }) {
   const navigate = useNavigate()
@@ -23,48 +23,60 @@ export function ArcaneaCreationBar({ onNewSession }: { onNewSession?: () => void
   }
 
   return (
-    <div className="flex items-center gap-2 border-b border-border/50 bg-background/80 p-2 rounded-t-lg">
-      <div className="flex items-center gap-1 text-sm font-medium text-muted-foreground">
+    <div className="flex flex-wrap items-center gap-2 border-b border-white/[0.06] bg-[#09090b]/80 px-3 py-2 backdrop-blur-sm">
+      <div className="flex items-center gap-1.5 text-sm">
         <Sparkles className="size-4 text-[#00bcd4]" />
         <span className="font-semibold text-foreground">Arcanea</span>
-        <span>Creation</span>
+        <span className="text-muted-foreground">Studio</span>
       </div>
-      <div className="ml-2 flex gap-1.5">
+
+      <div className="flex flex-wrap gap-1.5">
         <Button size="sm" variant="outline" onClick={startSession}>
-          <Plus className="mr-1 size-4" /> New Session
+          <Plus className="mr-1 size-4" /> Session
         </Button>
         <Button
-          className="bg-purple-600 hover:bg-purple-700"
+          className="border-[#00bcd4]/30 bg-[#00bcd4]/10 text-[#00bcd4] hover:bg-[#00bcd4]/20"
           size="sm"
-          variant="default"
+          variant="outline"
           onClick={() => launchArcaneaChatFlow('world', navigate)}
         >
-          <Globe className="mr-1 size-4" /> New World
+          <Globe className="mr-1 size-4" /> World
         </Button>
         <Button
-          className="bg-emerald-600 hover:bg-emerald-700"
+          className="border-[#0d47a1]/40 bg-[#0d47a1]/15 hover:bg-[#0d47a1]/25"
           size="sm"
-          variant="default"
+          variant="outline"
           onClick={() => launchArcaneaChatFlow('character', navigate)}
         >
-          <Users className="mr-1 size-4" /> New Character
+          <Users className="mr-1 size-4" /> Character
         </Button>
         <Button
-          className="bg-amber-600 hover:bg-amber-700"
+          className="border-[#ffd700]/30 bg-[#ffd700]/10 text-[#ffd700] hover:bg-[#ffd700]/20"
           size="sm"
-          variant="default"
+          variant="outline"
           onClick={() => launchArcaneaChatFlow('book', navigate)}
         >
-          <FileText className="mr-1 size-4" /> New Book
+          <FileText className="mr-1 size-4" /> Book
+        </Button>
+        <Button
+          className="border-[#00bcd4]/40 bg-[#00bcd4]/15 hover:bg-[#00bcd4]/25"
+          size="sm"
+          variant="outline"
+          onClick={() => launchArcaneaImageFlow(navigate, 'portrait')}
+        >
+          <ImageIcon className="mr-1 size-4" /> Visual
         </Button>
         <Button size="sm" variant="ghost" onClick={() => navigate(ARTIFACTS_ROUTE)}>
-          <FolderOpen className="mr-1 size-4" /> Library
+          <FolderOpen className="mr-1 size-4" /> Artifacts
         </Button>
         <Button size="sm" variant="ghost" onClick={() => navigate(ARCANEA_ROUTE)}>
-          <Palette className="mr-1 size-4" /> Content Studio
+          <Palette className="mr-1 size-4" /> Studio
         </Button>
       </div>
-      <div className="ml-auto text-xs text-muted-foreground">Grok-first for creative gen • Arcanea voice</div>
+
+      <div className="ml-auto hidden text-xs text-muted-foreground lg:block">
+        Grok OAuth • image_generate • canon skills
+      </div>
     </div>
   )
 }

@@ -86,6 +86,7 @@ import { openUpdatesWindow, startUpdatePoller, stopUpdatePoller } from '../store
 import { isSecondaryWindow } from '../store/windows'
 
 import { applyPendingArcaneaPrompt } from '@/arcanea/launch-session'
+import { ensureArcaneaCreativeProvider } from '@/arcanea/provider-gate'
 
 import { ChatView } from './chat'
 import { requestComposerFocus, requestComposerInsert } from './chat/composer/focus'
@@ -864,6 +865,12 @@ export function DesktopController() {
       void refreshSessions().catch(() => undefined)
     }
   }, [gatewayState, refreshCurrentModel, refreshSessions])
+
+  useEffect(() => {
+    if (gatewayState === 'open') {
+      void ensureArcaneaCreativeProvider()
+    }
+  }, [gatewayState])
 
   // Keep the cron jobs section live without a user action: the scheduler ticks
   // in the background (advancing next-run/state and creating runs), so poll the

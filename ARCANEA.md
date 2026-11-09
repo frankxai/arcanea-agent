@@ -84,3 +84,11 @@ Milestone 0 is not a divergent app. It is a safe fork with an Arcanea patch ledg
 Milestone 1 is an installable Arcanea Agent profile distribution that works on stock Hermes.
 
 Milestone 2 is a thin branded desktop prototype only if distribution dogfooding proves it is needed.
+
+## Product UX direction
+
+User jobs, funnel, monetization order, and prioritized next builds live in:
+
+- `docs/arcanea/PRODUCT_UX_NEXT.md`
+
+North star for the experience: first World + Character in 15 minutes, Library continuity, BYOK, Publishing House as the flagship vertical, profiles before core forks.

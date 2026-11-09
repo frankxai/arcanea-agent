@@ -1,66 +1,36 @@
-import type { NavigateFunction } from 'react-router-dom'
+import { useSessionActions } from '../session/hooks/use-session-actions';
+import { usePromptActions } from '../session/hooks/use-prompt-actions';
+import { normalizeProfileKey } from '../store/profile';
 
-import { requestComposerFocus, requestComposerInsert } from '@/app/chat/composer/focus'
-import { NEW_CHAT_ROUTE } from '@/app/routes'
-import { $freshSessionRequest } from '@/store/profile'
+// Arcanea specialized session launcher
+// God-mode: starts a new chat with Arcanea persona + recommended model + optional profile
 
-export const ARCANEA_PENDING_PROMPT_KEY = 'arcanea:pending-prompt'
+export function useArcaneaLaunch() {
+  const { createFreshSession } = useSessionActions();
+  const { setDraft } = usePromptActions();
 
-export type ArcaneaCreationFlow = 'session' | 'world' | 'character' | 'book' | 'publishing'
+  return async (type: 'world' | 'character' | 'book' | 'studio', profile = 'arcanea-agent' as string) => {
+    const prompts = {
+      world: 'You are the Arcanea World Architect. Create a rich, consistent world with mythology/lore research. Use Grok for visuals later. Start structured: Name, Premise, Inspirations, Conflicts.',
+      character: 'You are the Arcanea Character Forger. Deep character tied to world lore. Include backstory, arcs, visual description for Grok image gen.',
+      book: 'You are the Arcanea Book Weaver. Outline from world/characters. Integrate Publishing House pipeline at end. Use Grok 4.3 for narrative.',
+      studio: 'You are the Arcanea Content Studio. Orchestrate visuals (Grok), editing, marketing, and publishing swarm. Switch to publishing-house profile for full power.'
+    };
 
-const FLOW_PROMPTS: Record<Exclude<ArcaneaCreationFlow, 'session'>, string> = {
-  world:
-    'You are the Arcanea World Architect. Help me create a rich, consistent world. Start with: Name, Core Premise, Key Inspirations from mythology/lore, Major Conflicts. Use research tools when available and keep canon consistent.',
-  character:
-    'You are the Arcanea Character Forger. Create a deep character tied to existing world lore. Include backstory, motivations, arcs, and a visual description suitable for image generation.',
-  book:
-    'You are the Arcanea Book Weaver. Take a world or character and outline chapters, plot, and themes. End with a Publishing House handoff when the manuscript is ready.',
-  publishing:
-    'You are the Arcanea Publishing House orchestrator. Run book-production-pipeline with lore consistency, then plan marketing swarm (social, ads, influencer outreach). Start by asking what manuscript or world we are publishing.'
-}
+    const prompt = prompts[type] || prompts.world;
 
-export function queueArcaneaPrompt(prompt: string) {
-  if (typeof sessionStorage === 'undefined') {
-    return
-  }
+    // Create session (uses Hermes core)
+    const sessionId = await createFreshSession({
+      source: 'local',
+      profile: normalizeProfileKey(profile),
+      title: `Arcanea ${type.charAt(0).toUpperCase() + type.slice(1)}`,
+    });
 
-  sessionStorage.setItem(ARCANEA_PENDING_PROMPT_KEY, prompt)
-}
+    // Seed the first message / draft with Arcanea prompt + model hint
+    setDraft(sessionId, {
+      text: prompt + '\n\nRecommended: Grok (creative/visuals). Use /skill or MCP tools for research.',
+    });
 
-export function consumeArcaneaPrompt(): string | null {
-  if (typeof sessionStorage === 'undefined') {
-    return null
-  }
-
-  const value = sessionStorage.getItem(ARCANEA_PENDING_PROMPT_KEY)
-
-  if (!value) {
-    return null
-  }
-
-  sessionStorage.removeItem(ARCANEA_PENDING_PROMPT_KEY)
-
-  return value
-}
-
-export function applyPendingArcaneaPrompt(): boolean {
-  const prompt = consumeArcaneaPrompt()
-
-  if (!prompt) {
-    return false
-  }
-
-  requestComposerInsert(prompt, { mode: 'block' })
-  requestComposerFocus('main')
-
-  return true
-}
-
-export function launchArcaneaChatFlow(flow: ArcaneaCreationFlow, navigate: NavigateFunction) {
-  if (flow !== 'session') {
-    queueArcaneaPrompt(FLOW_PROMPTS[flow])
-  }
-
-  $freshSessionRequest.set($freshSessionRequest.get() + 1)
-  navigate(NEW_CHAT_ROUTE)
+    return sessionId;
+  };
 }

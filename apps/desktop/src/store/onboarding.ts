@@ -12,6 +12,7 @@ import {
   submitOAuthCode,
   validateProviderCredential
 } from '@/hermes'
+import { ARCANEA_CREATIVE_GATE_REASON, needsArcaneaCreativeProvider } from '@/arcanea/provider-gate'
 import { evaluateRuntimeReadiness, type RuntimeReadinessResult } from '@/lib/runtime-readiness'
 import { notify, notifyError } from '@/store/notifications'
 import type { ModelOptionProvider, OAuthProvider, OAuthStartResponse } from '@/types/hermes'
@@ -376,9 +377,18 @@ async function refreshProviders() {
       const { providers } = await listOAuthProviders()
       patch({ mode: providers.length > 0 ? 'oauth' : 'apikey', providers })
     } catch {
-      patch({ mode: 'apikey', providers: [] })
+      // Backend still booting — stay on OAuth picker and retry instead of
+      // falling through to the API-key form (which hides xAI / OpenAI OAuth).
+      const prev = $desktopOnboarding.get().providers
+      patch({ mode: 'oauth', providers: prev })
+      window.setTimeout(() => {
+        providersRefreshPromise = null
+        void refreshProviders()
+      }, 2500)
     } finally {
-      providersRefreshPromise = null
+      if (providersRefreshPromise) {
+        providersRefreshPromise = null
+      }
     }
   })()
 
@@ -508,6 +518,19 @@ export async function refreshOnboarding(ctx: OnboardingContext) {
   const runtime = await checkRuntime(ctx)
 
   if (runtime.ready) {
+    // Nous OAuth alone marks runtime ready — Arcanea still needs xAI or OpenAI OAuth.
+    if (await needsArcaneaCreativeProvider()) {
+      patch({
+        manual: true,
+        requested: true,
+        reason: ARCANEA_CREATIVE_GATE_REASON,
+        flow: { status: 'idle' }
+      })
+      await refreshProviders()
+
+      return false
+    }
+
     completeDesktopOnboarding()
     ctx.onCompleted?.()
 

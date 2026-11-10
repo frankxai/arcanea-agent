@@ -95,7 +95,10 @@ import {
   sessionPinId
 } from '@/store/session'
 
-import { type AppView, ARTIFACTS_ROUTE, MESSAGING_ROUTE, SKILLS_ROUTE } from '../../routes'
+import { Sparkles } from '@/lib/icons'
+
+import { type AppView, ARCANEA_ROUTE, ARTIFACTS_ROUTE, MESSAGING_ROUTE, SKILLS_ROUTE } from '../../routes'
+  { id: 'arcanea', path: ARCANEA_ROUTE, view: 'arcanea' },
 import { SidebarPanelLabel } from '../../shell/sidebar-label'
 import type { SidebarNavItem } from '../../types'
 
@@ -130,8 +133,15 @@ const SIDEBAR_NAV: SidebarNavItem[] = [
     icon: props => <Codicon name="symbol-misc" {...props} />,
     route: SKILLS_ROUTE
   },
+  {
+    id: 'arcanea',
+    label: '',
+    icon: props => <Sparkles {...props} />,
+    route: ARCANEA_ROUTE
+  },
   { id: 'messaging', label: '', icon: props => <Codicon name="comment" {...props} />, route: MESSAGING_ROUTE },
   { id: 'artifacts', label: '', icon: props => <Codicon name="files" {...props} />, route: ARTIFACTS_ROUTE }
+  { id: 'arcanea', path: ARCANEA_ROUTE, view: 'arcanea' },
 ]
 
 const WORKSPACE_PAGE = 5
@@ -815,6 +825,7 @@ export function ChatSidebar({
 
                 const active =
                   (item.id === 'skills' && currentView === 'skills') ||
+                  (item.id === 'arcanea' && currentView === 'arcanea') ||
                   (item.id === 'messaging' && currentView === 'messaging') ||
                   (item.id === 'artifacts' && currentView === 'artifacts')
 
@@ -1772,3 +1783,4 @@ interface SortableSessionRowProps {
 function SortableSidebarSessionRow(props: SortableSessionRowProps) {
   return <SidebarSessionRow {...props} {...useSortableBindings(props.session.id)} />
 }
+/* God-mode injected: Arcanea nav item - render <SidebarMenuItem to="/arcanea">Arcanea Worlds</SidebarMenuItem> in your SidebarMenu */

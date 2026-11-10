@@ -2,6 +2,7 @@ import { useStore } from '@nanostores/react'
 import { useQuery } from '@tanstack/react-query'
 import { useEffect, useMemo, useRef, useState } from 'react'
 
+import { isArcaneaAgent } from '@/arcanea/agent-detect'
 import { ModelPickerDialog } from '@/components/model-picker'
 import { Button } from '@/components/ui/button'
 import { Codicon } from '@/components/ui/codicon'
@@ -407,10 +408,15 @@ function Header() {
   )
 }
 
-export const FEATURED_ID = 'nous'
+// Arcanea fork: Grok OAuth first (profile default is grok-4.3 / xai).
+export const FEATURED_ID = 'xai-oauth'
 const SHOW_ALL_KEY = 'hermes-onboarding-show-all-v1'
 
 const readShowAll = () => {
+  // Arcanea fork: show full OAuth list (xAI, OpenAI, Nous, …) on first paint.
+  if (isArcaneaAgent()) {
+    return true
+  }
   try {
     return window.localStorage.getItem(SHOW_ALL_KEY) === '1'
   } catch {

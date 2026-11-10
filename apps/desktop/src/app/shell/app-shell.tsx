@@ -24,6 +24,7 @@ import { KeybindPanel } from './keybind-panel'
 import { StatusbarControls, type StatusbarItem } from './statusbar-controls'
 import { TITLEBAR_HEIGHT, titlebarControlsPosition } from './titlebar'
 import { TitlebarControls, type TitlebarTool } from './titlebar-controls'
+import { ArcaneaCreationBar } from '@/arcanea/creation-bar'
 
 interface AppShellProps {
   children: ReactNode

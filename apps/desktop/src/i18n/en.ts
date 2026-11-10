@@ -1147,6 +1147,7 @@ export const en: Translations = {
     nav: {
       'new-session': 'New session',
       skills: 'Skills & Tools',
+      arcanea: 'Arcanea Studio',
       messaging: 'Messaging',
       artifacts: 'Artifacts'
     },
